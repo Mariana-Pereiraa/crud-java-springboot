@@ -15,14 +15,14 @@ public class ProdutoService {
     @Autowired
     private ProdutoRepository produtoRepository;
 
-    public List<Produto> listarTodos(){
-        return produtoRepository.findAll();
-    }
+//    public List<Produto> listarTodos(){
+//        return produtoRepository.findAll();
+//    }
 
     //    para usar DataTableServer
-//    public Page<Produto> listarPaginado(Pageable pageable){
-//        return produtoRepository.findAll(pageable);
-//    }
+    public Page<Produto> listarPaginado(Pageable pageable){
+        return produtoRepository.findAll(pageable);
+    }
 
     public Optional<Produto> buscarPorId(Long id){
         return produtoRepository.findById(id);

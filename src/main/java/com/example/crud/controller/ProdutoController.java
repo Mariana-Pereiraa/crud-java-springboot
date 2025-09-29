@@ -2,6 +2,7 @@ package com.example.crud.controller;
 
 import com.example.crud.model.Produto;
 import com.example.crud.service.ProdutoService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,18 +19,18 @@ public class ProdutoController {
     @Autowired
     private ProdutoService produtoService;
 
-    @GetMapping
-    public List<Produto> listarTodos(){
-        return produtoService.listarTodos();
-    }
-
 //    @GetMapping
-//    public Page<Produto> listarPaginado(Pageable pageable){
-//        return produtoService.listarPaginado(pageable);
+//    public List<Produto> listarTodos(){
+//        return produtoService.listarTodos();
 //    }
 
+    @GetMapping
+    public Page<Produto> listarPaginado(Pageable pageable){
+        return produtoService.listarPaginado(pageable);
+    }
+
     @PostMapping
-    public ResponseEntity<Produto> criar(@RequestBody Produto produto){
+    public ResponseEntity<Produto> criar(@Valid @RequestBody Produto produto){
         Produto produtoSalvo = produtoService.salvar(produto);
         return new ResponseEntity<>(produtoSalvo, HttpStatus.CREATED);
     }
