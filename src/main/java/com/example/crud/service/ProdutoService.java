@@ -19,7 +19,6 @@ public class ProdutoService {
 //        return produtoRepository.findAll();
 //    }
 
-    //    para usar DataTableServer
     public Page<Produto> listarPaginado(Pageable pageable){
         return produtoRepository.findAll(pageable);
     }
