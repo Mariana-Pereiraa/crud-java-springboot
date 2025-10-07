@@ -40,7 +40,7 @@ public class ProdutoService {
         if(novaQuantidade < 0){
             throw new IllegalArgumentException("A quantidade em estoque não pode ser negativa");
         }
-        produto.setQuantidadeEstoque(novaQuantidade);
+        produto.setQuantidade(novaQuantidade);
         return produtoRepository.save(produto);
     }
 }

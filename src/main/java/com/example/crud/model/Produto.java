@@ -30,7 +30,7 @@ public class Produto {
 
 
     @Column(nullable = false, columnDefinition = "integer default 0")
-    private Integer quantidadeEstoque = 0;
+    private Integer quantidade = 0;
 
 
 }

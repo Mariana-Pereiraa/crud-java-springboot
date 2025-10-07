@@ -40,6 +40,8 @@ public class ProdutoController {
                 .map(produtoExistente -> {
                     produtoExistente.setNome(produto.getNome());
                     produtoExistente.setPreco(produto.getPreco());
+                    produtoExistente.setQuantidade(produto.getQuantidade());
+                    produtoExistente.setCategoria(produto.getCategoria());
                     Produto produtoAtualizado = produtoService.salvar(produtoExistente);
                     return new ResponseEntity<>(produtoAtualizado, HttpStatus.OK);
                 })
@@ -57,8 +59,8 @@ public class ProdutoController {
 
 
     @PatchMapping("/{id}/estoque")
-    @PreAuthorize("hasRole('GESTOR') or hasRole('FUNCIONARIO')")
-    public ResponseEntity<Produto> atualizarEstoque(@PathVariable Long id, @RequestBody Map<String, Integer> payload) {
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Produto> atualizarQuantidade(@PathVariable Long id, @RequestBody Map<String, Integer> payload) {
         Integer novaQuantidade = payload.get("quantidade");
 
         if (novaQuantidade == null) {
