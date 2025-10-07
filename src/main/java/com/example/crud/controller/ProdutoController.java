@@ -8,9 +8,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/produtos")
@@ -19,24 +20,22 @@ public class ProdutoController {
     @Autowired
     private ProdutoService produtoService;
 
-//    @GetMapping
-//    public List<Produto> listarTodos(){
-//        return produtoService.listarTodos();
-//    }
-
     @GetMapping
-    public Page<Produto> listarPaginado(Pageable pageable){
+    @PreAuthorize("isAuthenticated()")
+    public Page<Produto> listarPaginado(Pageable pageable) {
         return produtoService.listarPaginado(pageable);
     }
 
     @PostMapping
-    public ResponseEntity<Produto> criar(@Valid @RequestBody Produto produto){
+    @PreAuthorize("hasRole('GESTOR')")
+    public ResponseEntity<Produto> criar(@Valid @RequestBody Produto produto) {
         Produto produtoSalvo = produtoService.salvar(produto);
         return new ResponseEntity<>(produtoSalvo, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Produto> atualizar(@PathVariable Long id, @RequestBody Produto produto){
+    @PreAuthorize("hasRole('GESTOR')")
+    public ResponseEntity<Produto> atualizar(@PathVariable Long id, @Valid @RequestBody Produto produto) {
         return produtoService.buscarPorId(id)
                 .map(produtoExistente -> {
                     produtoExistente.setNome(produto.getNome());
@@ -48,12 +47,26 @@ public class ProdutoController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(@PathVariable Long id){
-        if (!produtoService.buscarPorId(id).isPresent()){
+    @PreAuthorize("hasRole('GESTOR')")
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+        if (!produtoService.buscarPorId(id).isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        else produtoService.deletar(id);
+        } else produtoService.deletar(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+
+    @PatchMapping("/{id}/estoque")
+    @PreAuthorize("hasRole('GESTOR') or hasRole('FUNCIONARIO')")
+    public ResponseEntity<Produto> atualizarEstoque(@PathVariable Long id, @RequestBody Map<String, Integer> payload) {
+        Integer novaQuantidade = payload.get("quantidade");
+
+        if (novaQuantidade == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        Produto produtoAtualizado = produtoService.atualizarEstoque(id, novaQuantidade);
+
+        return ResponseEntity.ok(produtoAtualizado);
+
+    }
 }

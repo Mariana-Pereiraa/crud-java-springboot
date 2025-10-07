@@ -16,10 +16,6 @@ public class CategoriaService {
     @Autowired
     private CategoriaRepository categoriaRepository;
 
-//    public List<Categoria> listarTodos(){
-//        return categoriaRepository.findAll();
-//    }
-
     public Page<Categoria> listarPaginado(Pageable pageable){
         return categoriaRepository.findAll(pageable);
     }

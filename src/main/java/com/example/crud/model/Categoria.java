@@ -1,9 +1,14 @@
 package com.example.crud.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotBlank;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
+import java.util.List;
+
+@Data
 @Entity
 @Table(name = "categorias", uniqueConstraints = {
         @UniqueConstraint(columnNames = "nome")
@@ -18,19 +23,8 @@ public class Categoria {
     @NotBlank(message = "Nome da categoria é obrigatório")
     private String nome;
 
-    public Long getId(){
-        return id;
-    }
+//    @OneToMany(mappedBy = "categoria")
+//    @JsonIgnore
+//    private List<Produto> produtos;
 
-    public void setId(Long id){
-        this.id = id;
-    }
-
-    public String getNome(){
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
 }
